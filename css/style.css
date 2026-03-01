@@ -62,28 +62,15 @@ footer {
   color: #aaa;
 }
 
-header {
-  position: relative; /* allows absolute positioning inside */
-}
-
-.contact-bar {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-}
-
 .contact-bar a {
-  margin-left: 15px;
-  color: #00e5ff; /* cyan tech color */
-  font-size: 1.3rem;
-  transition: color 0.3s ease, transform 0.3s ease;
+  text-decoration: none;
+  color: cyan; /* or your preferred neon color */
+  font-size: 1.5em;
+  margin: 0 10px;
 }
-
 .contact-bar a:hover {
-  color: #ff9800; /* orange hover */
-  transform: scale(1.2); /* slight zoom effect */
+  color: #ff4081; /* hover effect */
 }
-
 
 .hidden { display: none; }
 
@@ -91,5 +78,6 @@ header {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
 
 
