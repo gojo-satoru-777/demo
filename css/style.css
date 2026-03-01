@@ -62,9 +62,27 @@ footer {
   color: #aaa;
 }
 
+.contact-bar {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.contact-bar a {
+  margin-left: 15px;
+  color: #00e5ff;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.contact-bar a:hover {
+  color: #ff9800;
+}
+
 .hidden { display: none; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
