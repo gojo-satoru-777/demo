@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <title>Cybersecurity Awareness Hub</title>
   <link rel="stylesheet" href="css/style.css">
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <header>
@@ -22,26 +20,57 @@
     <a href="#" onclick="showPage('dos')">DDoS</a>
     <a href="#" onclick="showPage('mitm')">MITM</a>
     <a href="#" onclick="showPage('resources')">Resources</a>
-    <a href="#" onclick="showPage('contact')">Contact</a>
   </nav>
 
   <main>
-    <!-- Other sections remain the same -->
+    <section id="home">
+      <h2>Welcome</h2>
+      <p>Cybersecurity is everyone’s responsibility. Learn about threats and how to stay safe online.</p>
+    </section>
 
-    <section id="contact" class="hidden">
-      <h2>📞 Contact Me</h2>
-      <p><strong>Name:</strong> Karthick R</p>
-      <p>
-        <i class="fab fa-instagram"></i> 
-        <a href="https://instagram.com/your_instagram" target="_blank">@karthick.r24</a>
-      </p>
-      <p>
-        <i class="fas fa-envelope"></i> 
-        <a href="mailto:yourgmail@gmail.com">karthickrajendran2411@gmail.com</a>
-      </p>
-      <p>
-        <i class="fas fa-phone"></i> +91-8190873057
-      </p>
+    <section id="phishing" class="hidden">
+      <h2>🎣 Phishing</h2>
+      <p>Fraudulent attempts to steal sensitive information via fake emails or websites.</p>
+      <p><strong>Defense:</strong> Verify senders, avoid suspicious links, enable spam filters.</p>
+    </section>
+
+    <section id="sql" class="hidden">
+      <h2>💾 SQL Injection</h2>
+      <p>Attackers exploit database query vulnerabilities to access or manipulate data.</p>
+      <p><strong>Defense:</strong> Use parameterized queries, sanitize inputs, apply least-privilege DB access.</p>
+    </section>
+
+    <section id="malware" class="hidden">
+      <h2>🦠 Malware Attacks</h2>
+      <p>Viruses, worms, and ransomware designed to damage or steal data.</p>
+      <p><strong>Defense:</strong> Keep software updated, use antivirus tools, avoid untrusted downloads.</p>
+    </section>
+
+    <section id="password" class="hidden">
+      <h2>🔑 Password Attacks</h2>
+      <p>Hackers use brute-force or dictionary attacks to crack weak passwords.</p>
+      <p><strong>Defense:</strong> Enforce strong password policies, enable MFA, use password managers.</p>
+    </section>
+
+    <section id="dos" class="hidden">
+      <h2>🌐 Denial of Service (DDoS)</h2>
+      <p>Flooding servers with traffic to make them unavailable.</p>
+      <p><strong>Defense:</strong> Use firewalls, rate limiting, and DDoS protection services.</p>
+    </section>
+
+    <section id="mitm" class="hidden">
+      <h2>📡 Man-in-the-Middle (MITM)</h2>
+      <p>Intercepting communication between two parties to steal or alter data.</p>
+      <p><strong>Defense:</strong> Use HTTPS/TLS, VPNs, avoid public Wi-Fi for sensitive transactions.</p>
+    </section>
+
+    <section id="resources" class="hidden">
+      <h2>📚 Resources</h2>
+      <ul>
+        <li><a href="https://owasp.org">OWASP Foundation</a></li>
+        <li><a href="https://www.cisa.gov">CISA Cybersecurity</a></li>
+        <li><a href="https://www.cyber.gov.au">Australian Cyber Security Centre</a></li>
+      </ul>
     </section>
   </main>
 
@@ -57,4 +86,3 @@
   </script>
 </body>
 </html>
-
