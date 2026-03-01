@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cybersecurity Awareness Hub</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    nav { background: #333; padding: 10px; }
+    nav a { color: white; margin: 0 10px; text-decoration: none; }
+    section { padding: 20px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('phishing')">Phishing</a>
+    <a href="#" onclick="showPage('sql')">SQL Injection</a>
+    <a href="#" onclick="showPage('resources')">Resources</a>
+  </nav>
+
+  <section id="home">
+    <h1>Welcome to Cybersecurity Awareness Hub</h1>
+    <p>Learn about common hacking techniques and how to defend against them.</p>
+  </section>
+
+  <section id="phishing" class="hidden">
+    <h2>Phishing</h2>
+    <p>Phishing is a fraudulent attempt to obtain sensitive information by disguising as a trustworthy entity.</p>
+    <p><strong>Defense:</strong> Always verify email senders and avoid clicking suspicious links.</p>
+  </section>
+
+  <section id="sql" class="hidden">
+    <h2>SQL Injection</h2>
+    <p>Attackers exploit vulnerabilities in database queries to access or manipulate data.</p>
+    <p><strong>Defense:</strong> Use parameterized queries and input validation.</p>
+  </section>
+
+  <section id="resources" class="hidden">
+    <h2>Resources</h2>
+    <ul>
+      <li><a href="https://owasp.org">OWASP Foundation</a></li>
+      <li><a href="https://www.cisa.gov">CISA Cybersecurity</a></li>
+      <li><a href="https://www.cyber.gov.au">Australian Cyber Security Centre</a></li>
+    </ul>
+  </section>
+
+  <script>
+    function showPage(pageId) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
