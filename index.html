@@ -26,8 +26,7 @@
     </div>
   </header>
 
-
-  <!-- Your existing nav and sections remain unchanged -->
+  <!-- Navigation -->
   <nav>
     <a href="#" onclick="showPage('home')">Home</a>
     <a href="#" onclick="showPage('phishing')">Phishing</a>
@@ -44,7 +43,76 @@
       <h2>Welcome</h2>
       <p>Cybersecurity is everyone’s responsibility. Learn about threats and how to stay safe online.</p>
     </section>
-    <!-- Other sections unchanged -->
+
+    <section id="phishing" class="hidden">
+      <h2>Phishing</h2>
+      <p>Phishing attacks trick users into revealing sensitive information by pretending to be trusted sources.</p>
+      <ul>
+        <li>⚠️ Fake emails or websites mimicking banks/social media.</li>
+        <li>✅ Always check URLs before clicking.</li>
+        <li>✅ Enable multi-factor authentication.</li>
+      </ul>
+    </section>
+
+    <section id="sql" class="hidden">
+      <h2>SQL Injection</h2>
+      <p>SQL Injection exploits insecure database queries to steal or manipulate data.</p>
+      <ul>
+        <li>⚠️ Attackers insert malicious SQL into input fields.</li>
+        <li>✅ Use parameterized queries.</li>
+        <li>✅ Validate and sanitize user inputs.</li>
+      </ul>
+    </section>
+
+    <section id="malware" class="hidden">
+      <h2>Malware</h2>
+      <p>Malware is malicious software designed to damage or gain unauthorized access to systems.</p>
+      <ul>
+        <li>⚠️ Viruses, worms, ransomware.</li>
+        <li>✅ Keep software updated.</li>
+        <li>✅ Use antivirus and firewalls.</li>
+      </ul>
+    </section>
+
+    <section id="password" class="hidden">
+      <h2>Password Attacks</h2>
+      <p>Hackers attempt to crack or steal passwords to gain access.</p>
+      <ul>
+        <li>⚠️ Brute force, dictionary attacks, credential stuffing.</li>
+        <li>✅ Use strong, unique passwords.</li>
+        <li>✅ Enable password managers.</li>
+      </ul>
+    </section>
+
+    <section id="dos" class="hidden">
+      <h2>DDoS (Distributed Denial of Service)</h2>
+      <p>DDoS attacks flood servers with traffic, making them unavailable.</p>
+      <ul>
+        <li>⚠️ Botnets overwhelm websites.</li>
+        <li>✅ Use load balancers and firewalls.</li>
+        <li>✅ Monitor traffic patterns.</li>
+      </ul>
+    </section>
+
+    <section id="mitm" class="hidden">
+      <h2>Man-in-the-Middle (MITM)</h2>
+      <p>MITM attacks intercept communication between two parties.</p>
+      <ul>
+        <li>⚠️ Attackers eavesdrop on unsecured Wi-Fi.</li>
+        <li>✅ Use HTTPS and VPNs.</li>
+        <li>✅ Avoid public Wi-Fi for sensitive tasks.</li>
+      </ul>
+    </section>
+
+    <section id="resources" class="hidden">
+      <h2>Resources</h2>
+      <p>Learn more from trusted cybersecurity sources:</p>
+      <ul>
+        <li><a href="https://www.cybersecurity.gov" target="_blank">Cybersecurity & Infrastructure Security Agency (CISA)</a></li>
+        <li><a href="https://www.owasp.org" target="_blank">OWASP Foundation</a></li>
+        <li><a href="https://www.kaspersky.com/resource-center" target="_blank">Kaspersky Resource Center</a></li>
+      </ul>
+    </section>
   </main>
 
   <footer>
@@ -60,4 +128,3 @@
   </script>
 </body>
 </html>
-
