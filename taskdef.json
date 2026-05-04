@@ -31,7 +31,6 @@
             "systemControls": []
         }
     ],
-    "taskRoleArn": "arn:aws:iam::463367046625:role/ecsInstanceRole",
     "executionRoleArn": "arn:aws:iam::463367046625:role/ecsTaskExecutionRole",
     "volumes": [],
     "placementConstraints": [],
