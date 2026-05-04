@@ -7,7 +7,7 @@
   "executionRoleArn": "arn:aws:iam::463367046625:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
-      "name": "website",
+      "name": "aws/website",
       "image": "463367046625.dkr.ecr.eu-north-1.amazonaws.com/aws/website:GIT_COMMIT",
       "cpu": 0,
       "essential": true,
