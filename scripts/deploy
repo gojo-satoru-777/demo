@@ -1,0 +1,99 @@
+#!/bin/bash
+
+set -e  # Exit immediately on error
+
+# -------------------------------
+# Load .env file (if exists)
+# -------------------------------
+if [ -f .env ]; then
+  echo "Loading environment variables from .env..."
+  export $(grep -v '^#' .env | xargs)
+fi
+
+# -------------------------------
+# Validate required variables
+# -------------------------------
+: "${SERVICE_NAME:?Need to set SERVICE_NAME}"
+: "${TASK_FAMILY:?Need to set TASK_FAMILY}"
+: "${CLUSTER:?Need to set CLUSTER}"
+: "${JSON_FILE:?Need to set JSON_FILE}"
+: "${IMAGE_VERSION:?Need to set IMAGE_VERSION}"
+: "${BUILD_NUMBER:?Need to set BUILD_NUMBER}"
+
+# Optional variables
+GIT_BRANCH=${GIT_BRANCH:-default}
+AWS_REGION=${AWS_REGION:-us-east-1}
+PROFILE=${PROFILE:-default}
+
+startDeploy() {
+
+echo "🚀 Starting ECS Deployment..."
+
+echo "Preparing task definition..."
+
+# Replace placeholders in JSON
+sed -e "s;GIT_COMMIT;${IMAGE_VERSION};g" ${JSON_FILE}.json > temp-task.json
+sed -e "s;GROUP_NAME;${GIT_BRANCH};g" temp-task.json > taskdef-${BUILD_NUMBER}.json
+
+echo "Generated task definition:"
+cat taskdef-${BUILD_NUMBER}.json
+
+echo "Registering task definition..."
+
+aws ecs register-task-definition \
+  --family ${TASK_FAMILY} \
+  --cli-input-json file://taskdef-${BUILD_NUMBER}.json \
+  --region $AWS_REGION \
+  --profile $PROFILE
+
+# Get latest revision
+TASK_REVISION=$(aws ecs describe-task-definition \
+  --task-definition ${TASK_FAMILY} \
+  --query 'taskDefinition.revision' \
+  --output text \
+  --region $AWS_REGION \
+  --profile $PROFILE)
+
+echo "New Task Revision: $TASK_REVISION"
+
+# Get current desired count
+DESIRED_COUNT=$(aws ecs describe-services \
+  --cluster ${CLUSTER} \
+  --services ${SERVICE_NAME} \
+  --query 'services[0].desiredCount' \
+  --output text \
+  --region $AWS_REGION \
+  --profile $PROFILE)
+
+echo "Desired Count: $DESIRED_COUNT"
+
+echo "Updating ECS service..."
+
+aws ecs update-service \
+  --cluster ${CLUSTER} \
+  --service ${SERVICE_NAME} \
+  --desired-count $DESIRED_COUNT \
+  --task-definition ${TASK_FAMILY}:${TASK_REVISION} \
+  --force-new-deployment \
+  --region $AWS_REGION \
+  --profile $PROFILE
+
+echo "Waiting for service to stabilize..."
+
+aws ecs wait services-stable \
+  --cluster ${CLUSTER} \
+  --services ${SERVICE_NAME} \
+  --region $AWS_REGION \
+  --profile $PROFILE
+
+echo "✅ Deployment completed successfully"
+
+# Cleanup
+rm -f temp-task.json taskdef-${BUILD_NUMBER}.json
+
+}
+
+# -------------------------------
+# Execute deployment
+# -------------------------------
+startDeploy
