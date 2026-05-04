@@ -6,9 +6,7 @@ startBuild() {
 
 ECR_REPO=463367046625.dkr.ecr.eu-north-1.amazonaws.com/aws/website
 AWS_REGION=eu-north-1
-
-# Remove PROFILE if using IAM Role (recommended)
-PROFILE_OPTION=${PROFILE:+--profile $PROFILE}
+PROFILE=testuser
 
 DOCKER_BUILD_TAG=${GIT_BRANCH:-main}-${BUILD_NUMBER:-1}
 
@@ -17,11 +15,14 @@ docker build -t $ECR_REPO:$DOCKER_BUILD_TAG --pull=true .
 
 echo "✅ Docker build successful"
 
+IMAGE_ID=$(docker images -q $ECR_REPO:$DOCKER_BUILD_TAG)
+echo "Image ID: $IMAGE_ID"
+
 echo "🔐 Logging into ECR..."
-aws ecr get-login-password --region $AWS_REGION $PROFILE_OPTION | \
+aws ecr get-login-password --region $AWS_REGION --profile $PROFILE | \
 docker login --username AWS --password-stdin 463367046625.dkr.ecr.$AWS_REGION.amazonaws.com
 
-echo "📦 Pushing image: $DOCKER_BUILD_TAG"
+echo "📦 Pushing image..."
 docker push $ECR_REPO:$DOCKER_BUILD_TAG
 
 echo "✅ Docker push successful"
@@ -30,5 +31,5 @@ docker logout
 
 }
 
-# Execute
+# Call the function
 startBuild
