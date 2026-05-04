@@ -1,99 +1,69 @@
-#!/bin/bash
+startDeploy()
+{
+# Create a new task definition for this build
 
-set -e  # Exit immediately on error
+sed -e "s;GIT_COMMIT;${IMAGE_VERSION};g" ${JSON_FILE}.json > ${JSON_FILE}-new-${BUILD_NUMBER}.json
 
-# -------------------------------
-# Load .env file (if exists)
-# -------------------------------
-if [ -f .env ]; then
-  echo "Loading environment variables from .env..."
-  export $(grep -v '^#' .env | xargs)
+sed -e "s;GROUP_NAME;${GIT_BRANCH};g" ${JSON_FILE}-new-${BUILD_NUMBER}.json > ${JSON_FILE}-${BUILD_NUMBER}.json
+
+
+cat ${JSON_FILE}-${BUILD_NUMBER}.json
+
+aws ecs register-task-definition --family ${TASK_FAMILY} --cli-input-json file://${JSON_FILE}-${BUILD_NUMBER}.json --region eu-north-1 --profile testuser
+
+# Update the service with the new task definition and desired count
+TASK_REVISION=`aws ecs describe-task-definition --task-definition ${TASK_FAMILY} --region eu-north-1 --profile testuser | egrep "revision" | tr "/" " " | awk '{print $2}' | sed 's/"$//'`
+echo $TASK_REVISION
+DESIRED_COUNT=`aws ecs describe-services --cluster ${CLUSTER} --services ${SERVICE_NAME}  --region eu-north-1 --profile testuser | egrep "desiredCount" | tr "/" " " | awk '{print $2}' | sed 's/,$//'`
+echo $DESIRED_COUNT
+OLD_TASK_ID=$(aws ecs list-tasks --cluster ${CLUSTER} --desired-status RUNNING --service ${SERVICE_NAME} --region eu-north-1 --profile testuser | egrep "task/" | sed -E "s/.*task\/(.*)\"/\1/")
+echo $OLD_TASK_ID
+aws ecs stop-task --cluster ${CLUSTER} --task ${OLD_TASK_ID} --region us-east-1 --profile tfw-new
+aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE_NAME} --desired-count 1 --task-definition ${TASK_FAMILY} --force-new-deployment --region eu-north-1 --profile testuser
+
+# Jenkins Job wait until service is avaliable in cluster
+aws ecs wait services-stable --cluster ${CLUSTER} --services ${SERVICE_NAME} --region eu-north-1 --profile testuser
+if [ $? -eq 0 ]; then
+echo "Build got deployed successfully"
+else
+echo "Build failed"
+exit 1
 fi
-
-# -------------------------------
-# Validate required variables
-# -------------------------------
-: "${SERVICE_NAME:?Need to set SERVICE_NAME}"
-: "${TASK_FAMILY:?Need to set TASK_FAMILY}"
-: "${CLUSTER:?Need to set CLUSTER}"
-: "${JSON_FILE:?Need to set JSON_FILE}"
-: "${IMAGE_VERSION:?Need to set IMAGE_VERSION}"
-: "${BUILD_NUMBER:?Need to set BUILD_NUMBER}"
-
-# Optional variables
-GIT_BRANCH=${GIT_BRANCH:-default}
-AWS_REGION=${AWS_REGION:-us-east-1}
-PROFILE=${PROFILE:-default}
-
-startDeploy() {
-
-echo "🚀 Starting ECS Deployment..."
-
-echo "Preparing task definition..."
-
-# Replace placeholders in JSON
-sed -e "s;GIT_COMMIT;${IMAGE_VERSION};g" ${JSON_FILE}.json > temp-task.json
-sed -e "s;GROUP_NAME;${GIT_BRANCH};g" temp-task.json > taskdef-${BUILD_NUMBER}.json
-
-echo "Generated task definition:"
-cat taskdef-${BUILD_NUMBER}.json
-
-echo "Registering task definition..."
-
-aws ecs register-task-definition \
-  --family ${TASK_FAMILY} \
-  --cli-input-json file://taskdef-${BUILD_NUMBER}.json \
-  --region $AWS_REGION \
-  --profile $PROFILE
-
-# Get latest revision
-TASK_REVISION=$(aws ecs describe-task-definition \
-  --task-definition ${TASK_FAMILY} \
-  --query 'taskDefinition.revision' \
-  --output text \
-  --region $AWS_REGION \
-  --profile $PROFILE)
-
-echo "New Task Revision: $TASK_REVISION"
-
-# Get current desired count
-DESIRED_COUNT=$(aws ecs describe-services \
-  --cluster ${CLUSTER} \
-  --services ${SERVICE_NAME} \
-  --query 'services[0].desiredCount' \
-  --output text \
-  --region $AWS_REGION \
-  --profile $PROFILE)
-
-echo "Desired Count: $DESIRED_COUNT"
-
-echo "Updating ECS service..."
-
-aws ecs update-service \
-  --cluster ${CLUSTER} \
-  --service ${SERVICE_NAME} \
-  --desired-count $DESIRED_COUNT \
-  --task-definition ${TASK_FAMILY}:${TASK_REVISION} \
-  --force-new-deployment \
-  --region $AWS_REGION \
-  --profile $PROFILE
-
-echo "Waiting for service to stabilize..."
-
-aws ecs wait services-stable \
-  --cluster ${CLUSTER} \
-  --services ${SERVICE_NAME} \
-  --region $AWS_REGION \
-  --profile $PROFILE
-
-echo "✅ Deployment completed successfully"
-
-# Cleanup
-rm -f temp-task.json taskdef-${BUILD_NUMBER}.json
-
+rm -rf ${JSON_FILE}-${BUILD_NUMBER}.json
 }
 
-# -------------------------------
-# Execute deployment
-# -------------------------------
+if [ "$GIT_BRANCH" = "master-migration" ]
+then
+SERVICE_NAME="adfarm-tfw-web-migration"
+IMAGE_VERSION="${GIT_BRANCH}-${BUILD_NUMBER}"
+TASK_FAMILY="adfarm-tfw-web-migration"
+CLUSTER="production-tfw"
+JSON_FILE="adfarm-tfw-web-mig"
 startDeploy
+elif [ "$GIT_BRANCH" = "main" ]
+then
+SERVICE_NAME="my-service"
+IMAGE_VERSION="${GIT_BRANCH}-${BUILD_NUMBER}"
+TASK_FAMILY="my-task"
+CLUSTER="my-cluster"
+JSON_FILE="taskdef"
+startDeploy
+elif [ "$GIT_BRANCH" = "preprod" ]
+then
+SERVICE_NAME="preprod-adfarm-tfw-web"
+IMAGE_VERSION="${GIT_BRANCH}-${BUILD_NUMBER}"
+TASK_FAMILY="adfarm-tfw-web"
+CLUSTER="development-tfw"
+JSON_FILE="adfarm-tfw-web"
+startDeploy
+elif [ "$GIT_BRANCH" = "master" ]
+then
+SERVICE_NAME="adfarm-tfw-web"
+IMAGE_VERSION="${GIT_BRANCH}-${BUILD_NUMBER}"
+TASK_FAMILY="adfarm-tfw-web"
+CLUSTER="production-tfw"
+JSON_FILE="prod-adfarm-web"
+startDeploy
+else
+echo "Skipping a deployment because this branch is not permitted for docker deployment: ${GIT_BRANCH}"
+fi
