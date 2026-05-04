@@ -1,37 +1,30 @@
+
 {
-  "family": "my-task",
-  "networkMode": "bridge",
-  "requiresCompatibilities": ["EC2"],
-  "cpu": "300",
-  "memory": "300",
-  "executionRoleArn": "arn:aws:iam::463367046625:role/ecsTaskExecutionRole",
-  "containerDefinitions": [
-    {
-      "name": "aws/website",
-      "image": "463367046625.dkr.ecr.eu-north-1.amazonaws.com/aws/website:GIT_COMMIT",
-      "cpu": 0,
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 80,
-          "hostPort": 80,
-          "protocol": "tcp"
-        }
-      ],
-      "environment": [],
-      "mountPoints": [],
-      "volumesFrom": [],
-      "logConfiguration": {
+	"family": "my-task",
+	"taskRoleArn": "arn:aws:iam::463367046625:role/ecsInstanceRole",
+	"containerDefinitions": [{
+		"name": "my-task",
+		"image": "867267088667.dkr.ecr.us-east-1.amazonaws.com/adfarm-tfw-admin:GIT_COMMIT",
+		"cpu": 300,
+		"memory": 300,
+		"memoryReservation": 200,
+		"volumesFrom": [],
+		"portMappings": [{
+			"hostPort": 80,
+			"containerPort": 80,
+			"protocol": "tcp"
+		}],
+		"essential": true,
+        "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/testing",
+          "awslogs-group": "ecs/testing",
           "awslogs-region": "eu-north-1",
-          "awslogs-stream-prefix": "ecs",
-          "awslogs-create-group": "true"
+          "awslogs-stream-prefix": "testing"
         }
-      }
+      },
+      "environment": [],
+      "mountPoints": []
     }
-  ],
-  "volumes": [],
-  "placementConstraints": []
+  ]
 }
