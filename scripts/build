@@ -27,7 +27,7 @@ docker login --username AWS --password-stdin 463367046625.dkr.ecr.$AWS_REGION.am
 
 echo "Pushing images..."
 docker push $ECR_REPO:$DOCKER_BUILD_TAG
-docker push $ECR_REPO:latest
+docker push $ECR_REPO:v4
 
 echo "Docker push successful"
 
