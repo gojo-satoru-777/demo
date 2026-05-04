@@ -1,9 +1,9 @@
 {
-  "family": "testing",
+  "family": "my-task",
   "networkMode": "bridge",
   "requiresCompatibilities": ["EC2"],
-  "cpu": "1024",
-  "memory": "512",
+  "cpu": "300",
+  "memory": "300",
   "executionRoleArn": "arn:aws:iam::463367046625:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
