@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -e  # Exit on any error
+
+startBuild() {
+
+ECR_REPO=463367046625.dkr.ecr.eu-north-1.amazonaws.com/aws/website
+AWS_REGION=eu-north-1
+PROFILE=testuser
+
+DOCKER_BUILD_TAG=${GIT_BRANCH:-latest}-${BUILD_NUMBER:-1}
+
+echo "Building Docker image..."
+docker build -t $ECR_REPO:$DOCKER_BUILD_TAG --pull=true .
+
+echo "Docker build successful"
+
+IMAGE_ID=$(docker images -q $ECR_REPO:$DOCKER_BUILD_TAG)
+echo "Image ID: $IMAGE_ID"
+
+echo "Tagging image as latest..."
+docker tag $IMAGE_ID $ECR_REPO:latest
+
+echo "Logging into ECR..."
+aws ecr get-login-password --region $AWS_REGION --profile $PROFILE | \
+docker login --username AWS --password-stdin 463367046625.dkr.ecr.$AWS_REGION.amazonaws.com
+
+echo "Pushing images..."
+docker push $ECR_REPO:$DOCKER_BUILD_TAG
+docker push $ECR_REPO:latest
+
+echo "Docker push successful"
+
+docker logout
+
+}
+
+# Call the function
+startBuild
