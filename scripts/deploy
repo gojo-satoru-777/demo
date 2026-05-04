@@ -42,7 +42,7 @@ JSON_FILE="adfarm-tfw-web-mig"
 startDeploy
 elif [ "$GIT_BRANCH" = "main" ]
 then
-SERVICE_NAME="my-service"
+SERVICE_NAME="my-service-1"
 IMAGE_VERSION="${GIT_BRANCH}-${BUILD_NUMBER}"
 TASK_FAMILY="my-task"
 CLUSTER="my-cluster"
