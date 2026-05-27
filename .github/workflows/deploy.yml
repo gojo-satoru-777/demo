@@ -37,7 +37,7 @@ jobs:
       - name: Build and push Docker image
         id: build-image
         run: |
-          IMAGE_URI=463367046625.dkr.ecr.eu-north-1.amazonaws.com/cyber:${{ github.sha }}
+          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/cyber:${{ github.sha }}
 
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
