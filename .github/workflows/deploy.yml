@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: eu-north-1
-  AWS_ACCOUNT_ID: 009049668042
+  AWS_ACCOUNT_ID: "009049668042"
   ECR_REPOSITORY: actions
   ECS_CLUSTER: actions
   ECS_SERVICE: actions-service
