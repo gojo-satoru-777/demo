@@ -1,9 +1,17 @@
-name: Deploy to ECS
+name: Deploy Main App to ECS
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "index.html"
+      - "resouces.html"
+      - "css/**"
+      - "js/**"
+      - "dockerfile"
+      - "task-definition.json"
+      - ".github/workflows/deploy.yml"
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -35,7 +43,7 @@ jobs:
       - name: Build and push Docker image
         id: build-image
         run: |
-          IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${{ github.sha }}
+          IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:main-${{ github.sha }}
 
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
