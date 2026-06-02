@@ -1,0 +1,58 @@
+name: Deploy Service2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'service2/**'
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  ECR_REPOSITORY: actions
+  ECS_CLUSTER: demo
+  ECS_SERVICE: actions-2-service
+  ECS_TASK_DEFINITION: service-task-definition.json
+  CONTAINER_NAME: actions-2
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push
+        id: build-image
+        run: |
+          IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/actions:service2-${{ github.sha }}
+
+          docker build -t $IMAGE_URI ./service2
+          docker push $IMAGE_URI
+
+          echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
+
+      - name: Render Task Definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: service-task-definition.json
+          container-name: service2
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy ECS Service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: service2
+          cluster: demo
+          wait-for-service-stability: true
