@@ -1,0 +1,34 @@
+{
+    "family": "actions",
+    "containerDefinitions": [
+        {
+            "name": "actions",
+            "image": "618246140803.dkr.ecr.us-east-1.amazonaws.com/actions",
+            "cpu": 300,
+            "memory": 300,
+            "memoryReservation": 200,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 0,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/action",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "actions"
+                }
+            },
+            "systemControls": []
+        }
+    ],
+    "volumes": [],
+    "placementConstraints": []
+}
