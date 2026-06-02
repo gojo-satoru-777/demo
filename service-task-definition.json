@@ -1,8 +1,8 @@
 {
-    "family": "actions",
+    "family": "actions-2",
     "containerDefinitions": [
         {
-            "name": "actions",
+            "name": "actions-2",
             "image": "618246140803.dkr.ecr.us-east-1.amazonaws.com/actions",
             "cpu": 300,
             "memory": 300,
