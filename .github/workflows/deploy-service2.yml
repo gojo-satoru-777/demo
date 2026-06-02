@@ -8,6 +8,8 @@ on:
       - "service2/**"
       - "service-task-definition.json"
       - ".github/workflows/deploy-service2.yml"
+      
+  workflow_dispatch:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
