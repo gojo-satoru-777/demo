@@ -12,7 +12,8 @@ on:
       - "dockerfile"
       - "task-definition.json"
       - ".github/workflows/deploy.yml"
-
+    
+  workflow_dispatch:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
